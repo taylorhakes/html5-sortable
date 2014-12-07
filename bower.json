@@ -1,0 +1,32 @@
+{
+  "name": "sortable",
+  "main": "sortable.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/taylorhakes/sortable",
+  "authors": [
+    "Taylor Hakes <taylor@taylorhakes.com>"
+  ],
+  "description": "Lightweight HTML5 Sortable. No jQuery needed",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "sortable",
+    "html5",
+    "drag",
+    "drop"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "jquery": "~2.1.1",
+    "jquery-simulate": "~1.0.0"
+  }
+}
