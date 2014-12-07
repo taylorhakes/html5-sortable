@@ -1,4 +1,4 @@
-Sortable
+Sortable [![Build Status](https://travis-ci.org/taylorhakes/sortable.svg?branch=master)](https://travis-ci.org/taylorhakes/sortable)
 ========
 
 HTML5 Sortable. No jQuery needed. Only .5KBs gzipped!
