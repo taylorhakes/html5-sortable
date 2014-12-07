@@ -1,8 +1,10 @@
 Sortable
 ========
 
-HTML5 Sortable without jQuery. Only .5KBs gzipped!
+HTML5 Sortable. No jQuery needed. Only .5KBs gzipped!
 
+###
+Based on [HTML5Rocks Demo](http://www.html5rocks.com/en/tutorials/dnd/basics/)
 
 ## Simple API
 
@@ -12,7 +14,7 @@ var s = Sortable({
 });
 
 
-// destroy
+// destroy (not necessary)
 s.destroy();
 ```
 
