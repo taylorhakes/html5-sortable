@@ -74,7 +74,7 @@
 
     function init() {
       if (typeof options.els === 'string') {
-        sortables = [].slice.call(document.querySelector(options.els));
+        sortables = [].slice.call(document.querySelectorAll(options.els));
       } else {
         sortables = [].slice.call(options.els);
       }
