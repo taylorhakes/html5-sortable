@@ -3,11 +3,12 @@
 
   function Sortable(options) {
     var dragEl = null,
+      type = options.type || 'insert', // insert or swap
+      slice = Function.prototype.call.bind(Array.prototype.slice),
       sortables;
 
     function handleDragStart(e) {
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', this.innerHTML);
 
       dragEl = this;
 
@@ -36,6 +37,7 @@
     }
 
     function handleDrop(e) {
+      var dragElPos, dragElParent;
 
       // this/e.target is current target element.
       if (e.stopPropagation) {
@@ -43,9 +45,21 @@
       }
 
       // Don't do anything if we're dropping on the same column we're dragging.
-      if (dragEl != this) {
-        dragEl.innerHTML = this.innerHTML;
-        this.innerHTML = e.dataTransfer.getData('text/html');
+      if (dragEl !== this) {
+        dragElParent = dragEl.parentNode;
+        if (type === 'swap') {
+          dragElPos = slice(dragElParent.children).indexOf(dragEl);
+
+          dragElParent.insertBefore(dragEl, this);
+          if (dragElPos === 0 && !dragElParent.children[0]) {
+            dragElParent.appendChild(this);
+          } else {
+            dragElParent.insertBefore(this, dragElParent.children[dragElPos]);
+          }
+        } else {
+          dragElParent.insertBefore(dragEl, this);
+        }
+
       }
 
       return false;
@@ -63,30 +77,29 @@
     function destroy() {
       sortables.forEach(function (col) {
         col.removeAttribute('draggable', 'true');  // Enable columns to be draggable.
-        col.removeEventListener('dragstart', handleDragStart);
-        col.removeEventListener('dragenter', handleDragEnter);
-        col.removeEventListener('dragover', handleDragOver);
-        col.removeEventListener('dragleave', handleDragLeave);
-        col.removeEventListener('drop', handleDrop);
-        col.removeEventListener('dragend', handleDragEnd);
+        modifyListeners(col, 'remove');
       });
+    }
+
+    function modifyListeners(el, addOrRemove) {
+      el[addOrRemove+'EventListener']('dragstart', handleDragStart);
+      el[addOrRemove+'EventListener']('dragenter', handleDragEnter);
+      el[addOrRemove+'EventListener']('dragover', handleDragOver);
+      el[addOrRemove+'EventListener']('dragleave', handleDragLeave);
+      el[addOrRemove+'EventListener']('drop', handleDrop);
+      el[addOrRemove+'EventListener']('dragend', handleDragEnd);
     }
 
     function init() {
       if (typeof options.els === 'string') {
-        sortables = [].slice.call(document.querySelectorAll(options.els));
+        sortables = slice(document.querySelectorAll(options.els));
       } else {
-        sortables = [].slice.call(options.els);
+        sortables = slice(options.els);
       }
 
       sortables.forEach(function (col) {
         col.setAttribute('draggable', 'true');  // Enable columns to be draggable.
-        col.addEventListener('dragstart', handleDragStart);
-        col.addEventListener('dragenter', handleDragEnter);
-        col.addEventListener('dragover', handleDragOver);
-        col.addEventListener('dragleave', handleDragLeave);
-        col.addEventListener('drop', handleDrop);
-        col.addEventListener('dragend', handleDragEnd);
+        modifyListeners(col, 'add')
       });
     }
 
