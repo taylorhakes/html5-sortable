@@ -4,7 +4,9 @@
   function Sortable(options) {
     var dragEl = null,
       type = options.type || 'insert', // insert or swap
-      slice = Function.prototype.call.bind(Array.prototype.slice),
+      slice = function(arr, start, end) {
+		  return Array.prototype.slice.apply(arr, start, end)
+	  },
       sortables;
 
     function handleDragStart(e) {
