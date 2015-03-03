@@ -5,6 +5,7 @@
 	 * Make a group of items sortable
 	 * @method Sortable
 	 * @param options {Object} Object of options
+	 * @param options.els {Array<HTMLElement>|string} Elements that are sortable
 	 * @param options.type {'insert'|'swap'} Moving inserts or swaps items
 	 * @param options.onDragEnter {Function} Item enters a drop target
 	 * @param options.onDragOver {Function} Item over drop target
@@ -16,14 +17,14 @@
 	 * @constructor
 	 */
 	function Sortable(options) {
-		var dragEl = null,
-			type = options.type || 'insert', // insert or swap
+		var dragEl,
+			type,
 			slice = function (arr, start, end) {
 				return Array.prototype.slice.call(arr, start, end)
 			},
 			sortables,
-			overClass = options.overClass || 'sortable-over',
-			movingClass = options.movingClass || 'sortable-moving';
+			overClass,
+			movingClass;
 
 		function handleDragStart(e) {
 			e.dataTransfer.effectAllowed = 'move';
@@ -33,9 +34,7 @@
 			// this/e.target is the source node.
 			this.classList.add(movingClass);
 
-			if (options.onDragStart) {
-				options.onDragStart(e);
-			}
+			options.onDragStart && options.onDragStart(e);
 		}
 
 		function handleDragOver(e) {
@@ -46,31 +45,25 @@
 			e.dataTransfer.dropEffect = 'move';
 
 
-			if (options.onDragOver) {
-				options.onDragOver(e);
-			}
+			options.onDragOver && options.onDragOver(e);
 			return false;
 		}
 
 		function handleDragEnter() {
 			this.classList.add(overClass);
 
-			if (options.onDragEnter) {
-				options.onDragEnter(e);
-			}
+			options.onDragEnter && options.onDragEnter(e);
 		}
 
 		function handleDragLeave() {
 			// this/e.target is previous target element.
 			this.classList.remove(overClass);
 
-			if (options.onDragLeave) {
-				options.onDragLeave(e);
-			}
+			options.onDragLeave && options.onDragLeave(e);
 		}
 
 		function handleDrop(e) {
-			var dragElPos, dragElParent;
+			var dropParent, dropIndex, dragIndex;
 
 			// this/e.target is current target element.
 			if (e.stopPropagation) {
@@ -79,25 +72,29 @@
 
 			// Don't do anything if we're dropping on the same column we're dragging.
 			if (dragEl !== this) {
-				dragElParent = dragEl.parentNode;
-				if (type === 'swap') {
-					dragElPos = slice(dragElParent.children).indexOf(dragEl);
+				dropParent = this.parentNode;
+				dragIndex = slice(dragEl.parentNode.children).indexOf(dragEl);
 
-					dragElParent.insertBefore(dragEl, this);
-					if (dragElPos === 0 && !dragElParent.children[0]) {
-						dragElParent.appendChild(this);
+				if (type === 'swap') {
+					dropParent.insertBefore(dragEl, this);
+					if (dragIndex === 0 && !dropParent.children[0]) {
+						dropParent.appendChild(this);
 					} else {
-						dragElParent.insertBefore(this, dragElParent.children[dragElPos]);
+						dropParent.insertBefore(this, dropParent.children[dragIndex]);
 					}
 				} else {
-					dragElParent.insertBefore(dragEl, this);
+					dropIndex = slice(this.parentNode.children).indexOf(this);
+
+					if (this.parentNode === dragEl.parentNode && dropIndex > dragIndex) {
+						dropParent.insertBefore(dragEl, this.nextSibling);
+					} else {
+						dropParent.insertBefore(dragEl, this);
+					}
 				}
 
 			}
 
-			if (options.onDrop) {
-				options.onDrop(e);
-			}
+			options.onDrop && options.onDrop(e);
 
 			return false;
 		}
@@ -110,19 +107,19 @@
 				col.classList.remove(overClass, movingClass);
 			});
 
-			if (options.onDragEnd) {
-				options.onDragEnd(e);
-			}
+			options.onDragEnd && options.onDragEnd(e);
 		}
 
 		function destroy() {
 			sortables.forEach(function (col) {
 				col.removeAttribute('draggable', 'true');  // Enable columns to be draggable.
-				modifyListeners(col, 'remove');
+				modifyListeners(col, false);
 			});
 		}
 
-		function modifyListeners(el, addOrRemove) {
+		function modifyListeners(el, isAdd) {
+			var addOrRemove = isAdd ? 'add' : 'remove';
+
 			el[addOrRemove + 'EventListener']('dragstart', handleDragStart);
 			el[addOrRemove + 'EventListener']('dragenter', handleDragEnter);
 			el[addOrRemove + 'EventListener']('dragover', handleDragOver);
@@ -138,9 +135,13 @@
 				sortables = slice(options.els);
 			}
 
+			type = options.type || 'insert'; // insert or swap
+			overClass = options.overClass || 'sortable-over';
+			movingClass = options.movingClass || 'sortable-moving';
+
 			sortables.forEach(function (col) {
 				col.setAttribute('draggable', 'true');  // Enable columns to be draggable.
-				modifyListeners(col, 'add')
+				modifyListeners(col, true)
 			});
 		}
 
