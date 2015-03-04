@@ -154,6 +154,10 @@
 
 	if (typeof module !== 'undefined' && module['exports']) {
 		module['exports'] = Sortable;
+	} else if (typeof define !== 'undefined' && define.amd) {
+		define(function() {
+			return Sortable;
+		});
 	} else {
 		window['Sortable'] = Sortable;
 	}
