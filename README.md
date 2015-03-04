@@ -11,6 +11,11 @@ Based on [HTML5Rocks Demo](http://www.html5rocks.com/en/tutorials/dnd/basics/)
 ```
 var s = Sortable({
 	els: '.sortable' // Selector or array of elements
+
+	// Optional params
+
+	// behavior of drag and drop ('insert' or 'swap')
+	type: 'insert'
 });
 
 
