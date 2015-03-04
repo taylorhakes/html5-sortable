@@ -14,7 +14,7 @@ var s = Sortable({
 
 	// Optional params
 
-	// behavior of drag and drop ('insert' or 'swap')
+	// Behavior of drag and drop ('insert' or 'swap')
 	type: 'insert'
 });
 
