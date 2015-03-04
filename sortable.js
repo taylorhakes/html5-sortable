@@ -91,10 +91,12 @@
 						dropParent.insertBefore(dragEl, this);
 					}
 				}
-
 			}
 
+
 			options.onDrop && options.onDrop(e);
+
+			dragEl = null;
 
 			return false;
 		}
@@ -112,6 +114,8 @@
 				col.removeAttribute('draggable', 'true');  // Enable columns to be draggable.
 				modifyListeners(col, false);
 			});
+			sortables = null;
+			dragEl = null;
 		}
 
 		function modifyListeners(el, isAdd) {
