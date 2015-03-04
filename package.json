@@ -1,6 +1,6 @@
 {
   "name": "html5-sortable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight HTML5 Sortable. No jQuery needed",
   "main": "sortable.js",
   "directories": {

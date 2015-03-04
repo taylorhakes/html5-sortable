@@ -100,9 +100,6 @@
 		}
 
 		function handleDragEnd() {
-			// this/e.target is the source node.
-			this.style.opacity = '1';
-
 			[].forEach.call(sortables, function (col) {
 				col.classList.remove(overClass, movingClass);
 			});
